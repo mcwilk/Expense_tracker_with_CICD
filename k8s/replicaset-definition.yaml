@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-replicaset
+  labels:
+    app: myapp
+    type: backend
+spec:
+  template:         # here we define the Pods to be replicated
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        type: backend
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+  replicas: 6
+  selector:         # NEW in comparison to ReplicationController!!!
+    matchLabels:
+      type: backend # Matches the labels of the Pods
+
+
+
+# Tworzenie RS z YAML:                                  kubectl apply/create -f replicaset-definition.yaml
+# Lista istniejących RS:                                kubectl get replicaset
+# Lista istniejących Podów:                             kubectl get pods
+# Specyfikacja RS:                                      kubectl describe replicaset myapp-replicaset
+# Aktualizacja RS:                                      kubectl replace -f replicaset-definition.yaml
+# Skalowanie Podów (np. po zmianie replicas: 3 -> 6):   kubectl scale --replicas=6 -f replicaset-definition.yaml
+#                                                       kubectl scale --replicas=6 replicaset myapp-replicaset
+# Usuwanie RS (wraz ze śledzonymi Podami!):             kubectl delete replicaset myapp-replicaset
+# Info nt. tworzenia RS:                                kubectl explain replicaset
+
+

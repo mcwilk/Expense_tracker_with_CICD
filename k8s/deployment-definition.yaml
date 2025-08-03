@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-replicaset
+  labels:
+    app: myapp
+    type: backend
+spec:
+  template:         # here we define the Pods to be replicated
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        type: backend
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.27.0-alpine
+  replicas: 3
+  selector:         # NEW in comparison to ReplicationController!!!
+    matchLabels:
+      type: backend # Matches the labels of the Pods

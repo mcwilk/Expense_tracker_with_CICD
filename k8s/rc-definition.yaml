@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: app-rc
+  labels:
+    app: myapp
+    type: backend
+spec:
+  template:         # here we define the Pods to be replicated
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        type: backend
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+  replicas: 3
+
+# Tworzenie RC z YAML:            kubectl apply/create -f rc-definition.yaml
+# Lista istniejących RC:          kubectl get replicationcontroller
+# Lista istniejących Podów:       kubectl get pods
+
+
+

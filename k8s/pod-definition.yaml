@@ -1,0 +1,21 @@
+apiVersion: v1          # string
+kind: Pod               # string
+metadata:               # dictionary
+  name: myapp-pod
+  labels:               # pozwala filtrować Pody
+    app: myapp
+    type: backend
+spec:                   # dictionary (specification)
+  containers:           # list (bo myśliniki!); here: list of dicts
+  - name: nginx-container
+    image: nginx:1.28.0-alpine
+
+# Tworzenie Poda z YAML:          kubectl apply/create -f pod-definition.yaml
+# Tworzenie Poda z obrazu:        kubectl run nginx --image=nginx  (~docker run...)
+# Lista istniejących Podów:       kubectl get pods
+# Specyfikacja Poda:              kubectl describe pod myapp-pod
+# Edycja istniejącego Poda:       kubectl edit pod myapp-pod
+# Usuwanie Poda:                  kubectl delete pod myapp-pod
+
+
+
