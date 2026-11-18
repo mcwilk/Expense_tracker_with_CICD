@@ -17,7 +17,7 @@ class TestViews:
 
         with soft_assertions():
             assert_that(response.status_code).is_equal_to(200)
-            assert_that(index_view_temps).contains("budget_app/index.html")
+            assert_that(index_view_temps).contains("budget_app/index1231123.html")
             assert_that(html).contains("Login or register to continue")
             assert_that(header).is_equal_to("Welcome to Budget-App")
             assert_that(buttons).contains("Login", "Register")
