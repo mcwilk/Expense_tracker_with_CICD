@@ -2,9 +2,12 @@ name: test_ci
 on:
   pull_request:
     branches: [ "master" ]
+  push:
+    branches: [ "poc-copilot-test-workflow-review" ]
 
 env:
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  COPILOT_API_TOKEN: ${{ secrets.COPILOT_PAT }}
 
 jobs:
   linter:
@@ -93,8 +96,18 @@ jobs:
           python manage.py migrate
 
       - name: Run tests
+        id: int-tests
         run: |
           pytest --ignore=budget_app/tests/smoke/
+
+      - name: Analyze Failure with GitHub Copilot
+        if: steps.int-tests.outcome == 'failure'
+        run: |
+          npm install -g @github/copilot-cli
+
+          # Capture Copilot's analysis into a text file for the email body
+          github-copilot explain --file test-output.log \
+            --prompt "Analyze this test failure stack trace. Summarize the root cause and possible solutions." > copilot-report.txt
 
   build_and_smoke:
     name: Build and smoke testing
