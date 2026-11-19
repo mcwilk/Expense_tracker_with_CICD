@@ -7,7 +7,7 @@ on:
 
 env:
   SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  COPILOT_API_TOKEN: ${{ secrets.COPILOT_PAT }}
+#  COPILOT_API_TOKEN: ${{ secrets.COPILOT_PAT }}
 
 jobs:
   linter:
@@ -86,6 +86,9 @@ jobs:
         with:
           python-version: 3.12.14
 
+      - name: Node setup
+        uses: actions/setup-node@v6
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -101,13 +104,21 @@ jobs:
           pytest --ignore=budget_app/tests/smoke/
 
       - name: Analyze Failure with GitHub Copilot
+        id: inference
+        uses: actions/ai-inference@v1
         if:  always() && steps.int-tests.outcome == 'failure'
-        run: |
-          npm install -g @github/copilot-cli
+        with:
+          prompt: |
+            Analyze this test failure stack trace. Summarize the root cause and possible solutions.
+          model: gpt-4.1
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
 
-          # Capture Copilot's analysis into a text file for the email body
-          github-copilot explain --file test-output.log \
-            --prompt "Analyze this test failure stack trace. Summarize the root cause and possible solutions." > copilot-report.txt
+      - name: Output Copilot analysis
+        if: always() && steps.int-tests.outcome == 'failure'
+        run: |
+          echo "GitHub Copilot Analysis:"
+          echo "${{ steps.inference.outputs.response }}"
 
   build_and_smoke:
     name: Build and smoke testing
