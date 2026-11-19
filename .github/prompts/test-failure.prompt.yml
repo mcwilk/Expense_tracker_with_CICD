@@ -1,0 +1,9 @@
+messages:
+  - role: system
+    content: You are an expert at diagnosing Python and Django test failures.
+  - role: user
+    content: |
+      Analyze the pytest failure output below. Identify the most likely root cause and suggest concrete fixes. If the output is incomplete or inconclusive, say so.
+
+      Pytest output:
+      {{stack_trace}}

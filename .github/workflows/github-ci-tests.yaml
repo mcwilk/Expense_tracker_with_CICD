@@ -103,16 +103,23 @@ jobs:
 
       - name: Run tests
         id: int-tests
+        shell: bash
         run: |
-          pytest --ignore=budget_app/tests/smoke/
+          pytest --ignore=budget_app/tests/smoke/ 2>&1 | tee pytest-output.txt
+
+      - name: Prepare test failure trace
+        if: always() && steps.int-tests.outcome == 'failure'
+        run: |
+          python -c "from pathlib import Path; output = Path('pytest-output.txt').read_text(errors='replace'); Path('pytest-failure.txt').write_text(output[-20000:])"
 
       - name: Analyze Failure with GitHub Copilot
         id: inference
         uses: actions/ai-inference@v1
         if:  always() && steps.int-tests.outcome == 'failure'
         with:
-          prompt: |
-            Analyze this test failure stack trace. Summarize the root cause and possible solutions.
+          prompt-file: ./.github/prompts/test-failure.prompt.yml
+          file_input: |
+            stack_trace: ./pytest-failure.txt
           model: gpt-4.1
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
