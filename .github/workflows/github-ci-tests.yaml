@@ -127,18 +127,18 @@ jobs:
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
         with:
-          prompt-file: ./.github/prompts/test-failure-prompt.yml
+          prompt-file: ./.github/prompts/test-failure.prompt.yml
           file_input: |
-            test-report: ./${REPORT_FILENAME}
+            test-report: ./${{ env.REPORT_FILENAME }}
 
       - name: Output Copilot analysis
-        if: always() && steps.int-tests.outcome == 'failure'
+        if: always() && steps.run-int-tests.outcome == 'failure'
         run: |
           echo "GitHub Copilot Analysis:"
           echo "${{ steps.inference.outputs.response }}"
 
       - name: Upload Copilot analysis as TXT Artifact
-        if: always() && steps.int-tests.outcome == 'failure'
+        if: always() && steps.run-int-tests.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
           name: copilot-analysis
