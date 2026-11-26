@@ -3,4 +3,116 @@ messages:
     content: You are an expert at diagnosing Python and Django test failures.
   - role: user
     content: |
-      Analyze the pytest failure output. Identify the most likely root cause and suggest concrete fixes. If the output is incomplete or inconclusive, say so. The output is:\n{{test-report}}
+      Analyze the pytest failure output. Identify the most likely root cause and suggest concrete fixes. If the output is incomplete or inconclusive, say so. The output is:
+      
+      ============================= test session starts ==============================
+      platform linux -- Python 3.12.14, pytest-8.3.5, pluggy-1.7.0
+      django: version: 4.2, settings: budget_config.settings (from ini)
+      rootdir: /home/runner/work/Expense_tracker_with_CICD/Expense_tracker_with_CICD
+      configfile: pytest.ini
+      plugins: platformdirs-4.14.8, django-4.11.1
+      collected 14 items
+
+      budget_app/tests/integration/test_forms.py::TestForms::test_budget_creation_form_with_valid_data 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [  7%]
+      budget_app/tests/integration/test_forms.py::TestForms::test_budget_creation_form_without_name 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [ 14%]
+      budget_app/tests/integration/test_forms.py::TestForms::test_budget_creation_form_without_balance 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [ 21%]
+      budget_app/tests/integration/test_forms.py::TestForms::test_budget_creation_form_with_invalid_balance 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [ 28%]
+      budget_app/tests/integration/test_forms.py::TestForms::test_clean_balance_raises_validation_error 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [ 35%]
+      budget_app/tests/integration/test_forms.py::TestForms::test_budget_creation_form_with_existing_name 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [ 42%]
+      budget_app/tests/integration/test_forms.py::TestForms::test_budget_creation_form_with_too_short_name 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [ 50%]
+      budget_app/tests/integration/test_models.py::TestModels::test_budget_info_creation 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      -------------------------------- live log call ---------------------------------
+      INFO     root:test_models.py:14 Running 'test_budget_info_creation'...
+      PASSED                                                                   [ 57%]
+      budget_app/tests/integration/test_models.py::TestModels::test_expense_creation 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:36 Test budget has been created!
+      -------------------------------- live log call ---------------------------------
+      INFO     root:test_models.py:35 Running 'test_expense_creation'...
+      PASSED                                                                   [ 64%]
+      budget_app/tests/integration/test_models.py::TestModels::test_get_total_expenses 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:36 Test budget has been created!
+      INFO     root:conftest.py:47 Test expense no.1 has been created!
+      INFO     root:conftest.py:47 Test expense no.2 has been created!
+      INFO     root:conftest.py:47 Test expense no.3 has been created!
+      -------------------------------- live log call ---------------------------------
+      INFO     root:test_models.py:74 Running 'test_get_total_expenses'...
+      PASSED                                                                   [ 71%]
+      budget_app/tests/integration/test_models.py::TestModels::test_get_balance_left 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:36 Test budget has been created!
+      INFO     root:conftest.py:47 Test expense no.1 has been created!
+      INFO     root:conftest.py:47 Test expense no.2 has been created!
+      INFO     root:conftest.py:47 Test expense no.3 has been created!
+      -------------------------------- live log call ---------------------------------
+      INFO     root:test_models.py:80 Running 'test_get_balance_left'...
+      PASSED                                                                   [ 78%]
+      budget_app/tests/integration/test_views.py::TestViews::test_index_view_basic_template FAILED [ 85%]
+      budget_app/tests/integration/test_views.py::TestViews::test_index_view_redirects_if_logged_in 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [ 92%]
+      budget_app/tests/integration/test_views.py::TestViews::test_budget_list_view 
+      -------------------------------- live log setup --------------------------------
+      INFO     root:conftest.py:18 Test user has been created!
+      INFO     root:conftest.py:28 Test user has been logged in!
+      PASSED                                                                   [100%]
+
+      =================================== FAILURES ===================================
+      ___________________ TestViews.test_index_view_basic_template ___________________
+
+      self = <budget_app.tests.integration.test_views.TestViews object at 0x7322c7d36fc0>
+      client = <django.test.client.Client object at 0x7322c750d2e0>
+
+          def test_index_view_basic_template(self, client):
+              response = client.get(reverse('home'))
+              html = response.content.decode("utf-8")
+              soup = BeautifulSoup(response.content, "html.parser")
+              index_view_temps = [t.name for t in response.templates]
+              header = soup.find("header").text.strip()
+              buttons = [btn.text.strip() for btn in soup.find_all("button")]
+
+      >       with soft_assertions():
+      E       AssertionError: soft assertion failures:
+      E       1. Expected <['budget_app/index.html', 'budget_app/base.html']> to contain item <budget_app/index1231123.html>, but did not.
+
+      budget_app/tests/integration/test_views.py:18: AssertionError
+      =========================== short test summary info ============================
+      FAILED budget_app/tests/integration/test_views.py::TestViews::test_index_view_basic_template - AssertionError: soft assertion failures:
+      1. Expected <['budget_app/index.html', 'budget_app/base.html']> to contain item <budget_app/index1231123.html>, but did not.
+      ========================= 1 failed, 13 passed in 2.48s =========================

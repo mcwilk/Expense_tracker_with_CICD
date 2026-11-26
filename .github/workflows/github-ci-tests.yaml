@@ -121,6 +121,17 @@ jobs:
           path: test-results-*.txt
           retention-days: 3
 
+      - name: Prepare Copilot prompt
+        if: always() && steps.run-int-tests.outcome == 'failure'
+        run: |
+          {
+            cat <<'EOF'
+          Analyze the pytest failure output below. Identify the most likely root cause and suggest concrete fixes. If the output is incomplete or inconclusive, say so.
+          EOF
+            printf '\nPytest output:\n'
+            cat "$REPORT_FILENAME"
+          } > copilot-prompt.txt
+
       - name: Analyze Failure with GitHub Copilot
         id: inference
         if: always() && steps.run-int-tests.outcome == 'failure'
