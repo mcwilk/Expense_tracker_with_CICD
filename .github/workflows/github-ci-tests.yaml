@@ -127,6 +127,7 @@ jobs:
         uses: actions/ai-inference@v3
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
+          ACTIONS_STEP_DEBUG: true
         with:
           prompt-file: ./.github/prompts/test-failure.prompt.yaml
           file_input: |
