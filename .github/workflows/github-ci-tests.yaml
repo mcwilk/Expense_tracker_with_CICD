@@ -128,7 +128,7 @@ jobs:
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
         with:
-          prompt-file: ./.github/prompts/test-failure-prompt.txt
+          prompt-file: ./.github/prompts/test-failure.prompt.yml
           file_input: |
             test-report: ./${{ env.REPORT_FILENAME }}
 
