@@ -110,7 +110,7 @@ jobs:
           timestamp=$(date +%Y%m%d%H%M%S)
           report_filename="test-results-${timestamp}.txt"
           echo REPORT_FILENAME=${report_filename} >> $GITHUB_ENV
-          pytest --color=no --ignore=budget_app/tests/smoke/ 2>&1 | tee "${log_filename}"
+          pytest --color=no --ignore=budget_app/tests/smoke/ 2>&1 | tee "${report_filename}"
 
       - name: Upload test results as XML Artifact
         if: always()
