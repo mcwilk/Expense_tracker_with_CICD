@@ -123,7 +123,7 @@ jobs:
       - name: Analyze Failure with GitHub Copilot
         id: inference
         if: always() && steps.run-int-tests.outcome == 'failure'
-        uses: actions/ai-inference@v1
+        uses: actions/ai-inference@v2
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
         with:
