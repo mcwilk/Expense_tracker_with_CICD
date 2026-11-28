@@ -164,7 +164,7 @@ jobs:
         with:
           fetch-depth: 2
       - name: Download test results artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           name: test-report-file
       - name: Install Copilot CLI
