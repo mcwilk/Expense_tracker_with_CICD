@@ -16,7 +16,7 @@ class TestModels:
         budget = BudgetInfo.objects.create(name="budget1", owner=user, balance=2000, created_on="2025-02-10")
 
         with soft_assertions():
-            assert_that(hasattr(budget, 'name')).is_true()
+            assert_that(hasattr(budget, 'family_name')).is_true()
             assert_that(hasattr(budget, 'owner')).is_true()
             assert_that(hasattr(budget, 'balance')).is_true()
             assert_that(hasattr(budget, 'created_on')).is_true()
