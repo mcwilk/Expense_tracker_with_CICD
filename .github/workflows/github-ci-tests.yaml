@@ -89,8 +89,8 @@ jobs:
       - name: Node setup
         uses: actions/setup-node@v6
 
-      - name: Install Copilot CLI
-        run: npm install -g @github/copilot
+#      - name: Install Copilot CLI
+#        run: npm install -g @github/copilot
 
       - name: Install dependencies
         run: |
@@ -121,36 +121,49 @@ jobs:
           path: test-results-*.txt
           retention-days: 3
 
-      - name: Analyze Failure with GitHub Copilot
-        id: inference
-        if: always() && steps.run-int-tests.outcome == 'failure'
-        uses: actions/ai-inference@v3
-        env:
-          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
-        with:
-          system-prompt: You are an expert at diagnosing Python and Django test failures.
-          prompt-file: ./.github/prompts/test-failure-prompt.txt
-          file_input: |
-            test-report: ./${{ env.REPORT_FILENAME }}
-
-      - name: Output Copilot analysis
-        if: always() && steps.run-int-tests.outcome == 'failure'
-        run: |
-          echo "GitHub Copilot Analysis:"
-          echo "${{ steps.inference.outputs.response }}"
-
-      - name: Upload Copilot analysis as TXT Artifact
-        if: always() && steps.run-int-tests.outcome == 'failure'
-        uses: actions/upload-artifact@v7
-        with:
-          name: copilot-analysis
-          if-no-files-found: ignore
-          path: copilot-analysis-*.txt
-          retention-days: 3
+#      - name: Analyze Failure with GitHub Copilot
+#        id: inference
+#        if: always() && steps.run-int-tests.outcome == 'failure'
+#        uses: actions/ai-inference@v3
+#        env:
+#          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_PAT }}
+#        with:
+#          system-prompt: You are an expert at diagnosing Python and Django test failures.
+#          prompt-file: ./.github/prompts/test-failure-prompt.txt
+#          file_input: |
+#            test-report: ./${{ env.REPORT_FILENAME }}
+#
+#      - name: Output Copilot analysis
+#        if: always() && steps.run-int-tests.outcome == 'failure'
+#        run: |
+#          echo "GitHub Copilot Analysis:"
+#          echo "${{ steps.inference.outputs.response }}"
+#
+#      - name: Upload Copilot analysis as TXT Artifact
+#        if: always() && steps.run-int-tests.outcome == 'failure'
+#        uses: actions/upload-artifact@v7
+#        with:
+#          name: copilot-analysis
+#          if-no-files-found: ignore
+#          path: copilot-analysis-*.txt
+#          retention-days: 3
 
       - name: Fail the job if tests failed
         if: steps.run-int-tests.outcome == 'failure'
         run: exit 1
+
+  copilot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+      - name: Install Copilot CLI
+        run: npm install -g @github/copilot
+      - name: Run Copilot
+        run: copilot -p "Use git log with oneline option to show last 3 commits" -s --allow-tool='shell(git log:*)'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
   build_and_smoke:
     name: Build and smoke testing
