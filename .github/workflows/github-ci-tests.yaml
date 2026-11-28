@@ -154,7 +154,7 @@ jobs:
 
   copilot:
     needs: int_test
-    if: always() && needs.integration-tests.result == 'failure'
+    if: always() && needs.int_test.result == 'failure'
     runs-on: ubuntu-latest
     permissions:
       contents: read
