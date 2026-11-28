@@ -153,15 +153,24 @@ jobs:
         run: exit 1
 
   copilot:
+    needs: int_test
+    if: always() && needs.integration-tests.result == 'failure'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      copilot-requests: write
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 2
+      - name: Download test results artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: test-report-file
       - name: Install Copilot CLI
         run: npm install -g @github/copilot
       - name: Run Copilot
-        run: copilot -p "Use git log with oneline option to show last 3 commits" -s --allow-tool='shell(git log:*)'
+        run: copilot -p "Read and analyze the pytest failure output below. Identify the most likely root cause and suggest concrete fixes. If the output is incomplete or inconclusive, say so." -s --allow-tool='file(test-results-*.txt)'
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
